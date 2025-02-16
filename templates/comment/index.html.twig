@@ -1,39 +1,44 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Comment index{% endblock %}
+{% block title %}Liste des Commentaires{% endblock %}
 
 {% block body %}
-    <h1>Comment index</h1>
+    <div class="container mt-4">
+        <h1 class="mb-4">Liste des Commentaires</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Content</th>
-                <th>Author</th>
-                <th>CreatedAt</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for comment in comments %}
-            <tr>
-                <td>{{ comment.id }}</td>
-                <td>{{ comment.content }}</td>
-                <td>{{ comment.author }}</td>
-                <td>{{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_comment_show', {'id': comment.id}) }}">show</a>
-                    <a href="{{ path('app_comment_edit', {'id': comment.id}) }}">edit</a>
-                </td>
-            </tr>
+        <!-- Si aucune donnée n'est trouvée, on affiche un message d'alerte -->
+        {% if comments is empty %}
+            <div class="alert alert-warning" role="alert">
+                Aucun commentaire trouvé.
+            </div>
         {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Contenu</th>
+                        <th>Auteur</th>
+                        <th>Créé le</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for comment in comments %}
+                        <tr>
+                            <td>{{ comment.id }}</td>
+                            <td>{{ comment.content }}</td>
+                            <td>{{ comment.author }}</td>
+                            <td>{{ comment.createdAt ? comment.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                            <td>
+                                <a href="{{ path('app_comment_show', {'id': comment.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                                <a href="{{ path('app_comment_edit', {'id': comment.id}) }}" class="btn btn-warning btn-sm">Éditer</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
 
-    <a href="{{ path('app_comment_new') }}">Create new</a>
+        <a href="{{ path('app_comment_new') }}" class="btn btn-primary mt-3">Créer un Nouveau Commentaire</a>
+    </div>
 {% endblock %}

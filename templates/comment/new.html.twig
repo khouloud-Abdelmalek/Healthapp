@@ -1,11 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Comment{% endblock %}
+{% block title %}Créer un Nouveau Commentaire{% endblock %}
 
 {% block body %}
-    <h1>Create new Comment</h1>
+    <div class="container mt-4">
+        <h1 class="mb-4">Créer un Nouveau Commentaire</h1>
 
-    {{ include('comment/_form.html.twig') }}
+        <!-- Affichage du formulaire de création -->
+        <div class="card p-4 shadow-sm">
+            {{ include('comment/_form.html.twig') }}
+        </div>
 
-    <a href="{{ path('app_comment_index') }}">back to list</a>
+        <!-- Lien pour revenir à la liste des commentaires -->
+        <a href="{{ path('app_comment_index') }}" class="btn btn-secondary mt-3">Retour à la Liste des Commentaires</a>
+    </div>
 {% endblock %}
