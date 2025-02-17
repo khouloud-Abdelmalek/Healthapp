@@ -1,49 +1,62 @@
 <?php
+
 namespace App\Controller;
 
-use App\Entity\Post;
+use App\Entity\Sujet;
 use App\Entity\Comment;
+use App\Form\CommentType;
+use App\Repository\SujetRepository;
+use App\Repository\CommentRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/forum')]
 class ForumController extends AbstractController
 {
-    /**
-     * @Route("/forum", name="forum_index")
-     */
-    public function index(): Response
+    // Route pour afficher tous les sujets du forum
+    #[Route('/', name: 'forum_index')]
+    public function index(SujetRepository $sujetRepository): Response
     {
-        // Logique pour afficher les forums
-        return $this->render('forum/index.html.twig');
-    }
-
-    /**
-     * @Route("/forum/{id}", name="forum_show")
-     */
-    public function show(Post $post): Response
-    {
-        // Logique pour afficher un post spécifique et ses commentaires
-        return $this->render('forum/show.html.twig', [
-            'post' => $post,
+        return $this->render('forum/index.html.twig', [
+            'sujets' => $sujetRepository->findAll(),
         ]);
     }
 
-    /**
-     * @Route("/forum/{postId}/comment", name="add_comment", methods={"POST"})
-     */
-    public function addComment(Request $request, $postId): Response
+    // Route pour afficher un sujet spécifique avec ses commentaires
+    #[Route('/{id}', name: 'forum_show', methods: ['GET'])]
+    public function show(Sujet $sujet): Response
     {
-        // Logique pour ajouter un commentaire
-        $comment = new Comment();
-        $comment->setContent($request->get('content'));
-        $comment->setPost($this->getDoctrine()->getRepository(Post::class)->find($postId));
+        return $this->render('forum/show.html.twig', [
+            'sujet' => $sujet,
+        ]);
+    }
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($comment);
-        $entityManager->flush();
+    // Route pour ajouter un commentaire à un sujet
+    #[Route('/{id}/comment', name: 'add_comment', methods: ['POST'])]
+    public function addComment(
+        Sujet $sujet, 
+        Request $request, 
+        EntityManagerInterface $entityManager
+    ): Response {
+        $content = $request->request->get('content');
 
-        return $this->redirectToRoute('forum_show', ['id' => $postId]);
+        if (!empty(trim($content))) {
+            $comment = new Comment();
+            $comment->setContent($content);
+            $comment->setCreatedAt(new \DateTime());
+            $comment->setSujet($sujet); 
+
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Commentaire ajouté avec succès !');
+        } else {
+            $this->addFlash('danger', 'Le commentaire ne peut pas être vide.');
+        }
+
+        return $this->redirectToRoute('forum_show', ['id' => $sujet->getId()]);
     }
 }

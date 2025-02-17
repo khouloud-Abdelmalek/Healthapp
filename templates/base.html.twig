@@ -4,28 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}HealthApp{% endblock %}</title>
-    
-    <!-- Lien vers le fichier CSS de Bootstrap -->
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
 
-    {# Lien vers ton propre fichier CSS #}
+    <!-- Bootstrap CSS -->
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    
+    <!-- Fichier CSS personnalisé -->
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 
     {% block stylesheets %}{% endblock %}
 </head>
 <body>
-    <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('forum_index') }}">HealthApp Forum</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
         {% block body %}{% endblock %}
     </div>
 
-    <!-- Lien vers le fichier JS de Bootstrap -->
+    <!-- Bootstrap JS -->
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 
-    {# Lien vers ton propre fichier JavaScript #}
-    <script src="{{ asset('js/script.js') }}"></script>
-
-    {% block javascripts %}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
-    {% endblock %}
+    {% block javascripts %}{% endblock %}
 </body>
 </html>
