@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Forum - HealthApp{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .forum-posts { list-style-type: none; padding: 0; }
+    .forum-posts li { padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Bienvenue dans le forum ! ✅</h1>
+
+    <p>Explorez les discussions et contribuez à la communauté.</p>
+
+    <h2>Liste des posts du forum :</h2>
+    <ul class="forum-posts">
+        {% for post in posts %}
+            <li>
+                <h3>{{ post.title }}</h3>
+                <p>{{ post.content|slice(0, 100) }}...</p>
+                <a href="{{ path('forum_show', {'id': post.id}) }}">Lire plus</a>
+            </li>
+        {% else %}
+            <p>Aucun post disponible pour le moment.</p>
+        {% endfor %}
+    </ul>
+
+</div>
+{% endblock %}
